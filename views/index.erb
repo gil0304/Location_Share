@@ -1,0 +1,49 @@
+<% if current_user %>
+    <section class="navcenter">
+        <a href="/search">検索ページ</a>
+        <img src="<%= current_user.img %>" alt="user_image">
+    </section>
+    
+    <section>
+        <form class="center">
+            <input class="content" type="text" name="content" placeholder="コメントを入力してください">
+            <select class="category" name="category">
+                <option value="" disabled>カテゴリーを選択してください</option>
+                <option value="家">家</option>
+                <option value="学校">学校</option>
+                <option value="職場">職場</option>
+                <option value="遊び">遊び</option>
+                <option value="その他">その他</option>
+            </select>
+            <input type="submit" value="投稿" class="postbtn">
+        </form>
+        <div id="map"></div>
+        <div id="box">
+            <% if @maps %>
+                
+                    <div class="contributions">
+                        <% @maps.each do |map| %>
+                            <% if Relationship.find_by(followed_id: User.find(map.user_id).id, follower_id: current_user.id) and Relationship.find_by(followed_id: current_user.id, follower_id: User.find(map.user_id).id) %>
+                                <div class="contribution">
+                                    <img src="<%= User.find(map.user_id).img %>">
+                                    <div class="station">
+                                        <span class="name"><%= map.station %></span>
+                                    </div>
+                                    <p><%= map.content %></p>
+                                    <p><%= map.category %></p>
+                                    <p><%= map.time %></p>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    </div>
+                
+            <% end %>
+        </div>
+    </section>
+
+<% else %>
+    <section class="center">
+        <a href="/signin">ログイン</a>
+        <a href="/signup">新規登録</a>
+    </section>
+<% end %>

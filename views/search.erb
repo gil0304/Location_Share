@@ -1,0 +1,12 @@
+<section class="center">
+    <form action="/search" method="get">
+        <input type="text" name="keyword" placeholder="ユーザーIDを検索">
+        <input type="submit" value="検索">
+    </form>
+    
+    <p>検索結果</p>
+    <% if @keyword %>
+        <a href="/userhome/<%= @keyword["id"] %>" ><img src="<%= @keyword["img"] %>"></a>
+        <a href="/userhome/<%= @keyword["id"] %>"><%= @keyword["name"] %></a>
+    <% end %>
+</section>
