@@ -211,6 +211,7 @@ body {
     height: 50px;
     border-radius: 5px;
     border: 1px solid lightgray;
+    margin: 1vh;
 }
 
 .input-inner{
@@ -249,11 +250,7 @@ body {
     -webkit-transition: all 0.2s;
 }
 
-.fa-eye-slash{ /*アイコンに一定のスペースを設ける*/
-    height: 20px;
-    width: 20px;
-    padding: 5px 5px;
-}
+
 
 /*アニメーション*/
 .input-text:focus + .input-string{
