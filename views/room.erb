@@ -1,0 +1,22 @@
+<% if @rooms %>
+        <% @rooms.each do |room| %>
+            <% room.users.where.not(login_id: @login_user).each do |user| %>
+                <% @peer = user %>
+            <% end %>
+            <div class="secondary-room-box" data-id="/message/<%= @peer.login_id %>">
+                <div>
+                    <img src="<%= @peer.img %>">
+                    <div>
+                        <p><%= @peer.name %></p>
+                        <p>
+                            <% unless room.messages.empty? %>
+                                <%= room.messages.last.body %>
+                            <% end %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        <% end %>
+    <% else %>
+        <h2>メッセージがありません</h2>
+    <% end %>

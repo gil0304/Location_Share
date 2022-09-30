@@ -1,12 +1,29 @@
-<section class="center">
-    <form action="/search" method="get">
-        <input type="text" name="keyword" placeholder="ユーザーIDを検索">
-        <input type="submit" value="検索">
-    </form>
+<div class="home">
+    <div class="main-content">
+        <form class="group" autocomplete="off">
+            <div class="search_bar-search">
+                <i class="fas fa-search search_icon"></i>
+                <input class="keyword" type="text" name="keyword" placeholder="ユーザーIDを入力">
+            </div>
+            <input class="searchbtn" type="submit" value="検索">
+        </form>
+        <div class="search-box"></div>
+    </div>
+    <div class="sub-content">
+        <div class="user-list">
+            <p>おすすめユーザー</p>
+            <% if @recommendusers %>
+                <% @recommendusers.each do |recommenduser| %>
+                    <% if User.find(recommenduser).id != current_user.id %>
+                        <% if @currentuserfollowings.include?(User.find(recommenduser).id) %>
+                        <% else %>
+                            <a href="/userhome/<%= User.find(recommenduser).id %>"><img class="usericon" src="<%= User.find(recommenduser).img %>"></a>
+                            <a href="/userhome/<%= User.find(recommenduser).id %>"><%= User.find(recommenduser).name %></a>
+                        <% end %>
+                    <% end %>
+                <% end %>
+            <% end %>
+        </div>
+    </div>
+</div>
     
-    <p>検索結果</p>
-    <% if @keyword %>
-        <a href="/userhome/<%= @keyword["id"] %>" ><img src="<%= @keyword["img"] %>"></a>
-        <a href="/userhome/<%= @keyword["id"] %>"><%= @keyword["name"] %></a>
-    <% end %>
-</section>

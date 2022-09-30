@@ -7,7 +7,7 @@ class CreateMaps < ActiveRecord::Migration[6.1]
       t.string :content
       t.string :station
       t.string :category
-      t.datetime :time
+      t.string :time
       t.timestamps null: false
     end
   end

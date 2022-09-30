@@ -10,13 +10,63 @@ $(function(){
         x = position.coords.longitude;
         y = position.coords.latitude;
         
-        var MyLatLng = new google.maps.LatLng(y, x);
-        var Options = {
-            zoom: 15,      //地図の縮尺値
-            center: MyLatLng,    //地図の中心座標
-            mapTypeId: 'roadmap'   //地図の種類
-        };
-        var map = new google.maps.Map(document.getElementById("map"), Options);
+        var latlng = new google.maps.LatLng(y, x); 
+        var myOptions = { 
+          zoom: 15, 
+          center: latlng, 
+          mapTypeId: google.maps.MapTypeId.ROADMAP 
+        }; 
+        var map = new google.maps.Map(document.getElementById("map"), myOptions); 
+        
+        var currentusericon = $('#map2').data("id");
+        var myLatlng = new google.maps.LatLng(y, x);
+        var marker = new google.maps.Marker({
+           position: myLatlng,
+           icon: {
+                url: currentusericon[0]['icon'],
+                scaledSize: new google.maps.Size(40, 40),
+           },
+           map: map,
+        });
+        
+        var locations = $('#map').data("id");
+        var markerData = [];
+        for (var i = 0; i < locations.length; i++) {
+            markerData.unshift(locations[i]["location"]);
+            console.log(markerData);
+        }
+        console.log(markerData);
+        for (var i = 0; i < markerData.length; i++) {
+                const image = markerData[i]['icon']
+                markerLatLng = new google.maps.LatLng({lat: markerData[i]['y'], lng: markerData[i]['x']}); // 緯度経度のデータ作成
+                marker[i] = new google.maps.Marker({ // マーカーの追加
+                    position: markerLatLng, // マーカーを立てる位置を指定
+                    map: map, // マーカーを立てる地図を指定
+                    icon: {
+                        url: image,
+                        scaledSize: new google.maps.Size(40, 40),
+                    }
+               });
+         }
+         
+         //リクエスト時のクエリパラメータ
+        const query_params = new URLSearchParams({ 
+            appid: "09646546925253fd274d417c075b6de5", 
+            lon: x,
+            lat: y,
+            lang:"ja",
+        });
+        
+        //APIリクエスト
+        fetch("https://api.openweathermap.org/data/2.5/weather?" + query_params)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            var iconcode = data.weather[0].icon;
+            var iconurl = "http://openweathermap.org/img/w/" + iconcode + ".png";
+            $('#wicon').attr('src', iconurl);
+        });
       
     }
     
@@ -136,16 +186,21 @@ $(function(){
             dataType: "json"
         }).then(function(data){
             var contribution = $(`<div class="contribution">
-                    <img src="${data.postimg}">
-                    <div class="station">
-                        <span class="name">${data.station}</span>
+                    <div class="user-image">
+                        <a href="/userhome/${data.id}"><img class="usericon" src="${data.postimg}"></a>
                     </div>
-                    <p>${data.content}</p>
-                    <p>${data.category}</p>
-                    <p>${data.time}</p>
-                </div>`
+                    <div class="post-list">
+                        <div class="station">
+                            <span class="name">${data.station}</span>
+                        </div>
+                        <p>${data.content}</p>
+                        <p>${data.category}</p>
+                        <p>${data.time}</p>
+                    </div>
+                </div>
+                <div class="border"></div>`
             );
-            
+            console.log(contribution)
             $(".contributions").prepend(contribution);
         });
         
@@ -154,6 +209,78 @@ $(function(){
     };
     
     $(".postbtn").click(post)
+    
+    
+    //メッセージ
+    //  var message = function(){
+        
+    //     var messagebody = $(".messagebody").val();
+        
+    //     $.ajax({
+    //         url: "/sendmessage",
+    //         type: "POST",
+    //         data: {
+    //             body: body
+    //         },
+    //         dataType: "json"
+    //     }).then(function(data){
+    //         var contribution = $(`<div class="contribution">
+    //                 <div class="user-image">
+    //                     <a href="/userhome/${data.id}"><img src="${data.postimg}"></a>
+    //                 </div>
+    //                 <div class="post-list">
+    //                     <div class="station">
+    //                         <span class="name">${data.station}</span>
+    //                     </div>
+    //                     <p>${data.content}</p>
+    //                     <p>${data.category}</p>
+    //                     <p>${data.time}</p>
+    //                 </div>
+    //             </div>`
+    //         );
+            
+    //         $(".contributions").prepend(contribution);
+    //     });
+        
+    //     return false;
+        
+    // };
+    
+    // $(".sendmessage").click(post)
+    
+    
+    //検索
+    var searchuser = function(){
+        
+        var keyword = $(".keyword").val();
+        
+        $.ajax({
+            url: "/search",
+            type: "POST",
+            data: {
+                keyword: keyword
+            },
+            dataType: "json"
+        }).then(function(data){
+            console.log(data)
+            var search = $(`<p>検索結果<p>
+                <div class="search-user">
+                    <a href="/userhome/${data.id}" ><img class="usericon" src="${data.img}"></a>
+                    <a href="/userhome/${data.id}">${data.name}</a>
+                </div>`
+            );
+            console.log(search)
+            
+            $(".search-box").prepend(search);
+        });
+        
+        return false;
+        
+    };
+    
+    $(".searchbtn").click(searchuser)
+    
+    
     
     //フォロー
     var clickFollowBtn = function(){
@@ -181,4 +308,89 @@ $(function(){
     $(".followbtn").click(clickFollowBtn);
     
 });
+
+$('.input-text').focus(function(){
+    $('.password_box').animate({borderTopColor: '#3be5ae', borderLeftColor: '#3be5ae', borderRightColor: '#3be5ae', borderBottomColor: '#3be5ae'}, 200);
+}).blur(function(){
+    $('.password_box').animate({borderTopColor: '#d3d3d3', borderLeftColor: '#d3d3d3', borderRightColor: '#d3d3d3', borderBottomColor: '#d3d3d3'}, 200);
+});
+
+//画面が読み込まれたら＆リサイズされたら
+$(window).on('load resize', function() {
+    var windowWidth = window.innerWidth;
+    var elements = $('nav');//position: sticky;を指定している要素
+    if (windowWidth >= 768) {/*768px以上にIE用のJSをきかせる*/
+        Stickyfill.add(elements);
+    }else{
+        Stickyfill.remove(elements);
+    } 
+});
+
+$(window).on('load resize', function() {
+    var windowWidth = window.innerWidth;
+    var elements = $('.sub-content');//position: sticky;を指定している要素
+    if (windowWidth >= 768) {/*768px以上にIE用のJSをきかせる*/
+        Stickyfill.add(elements);
+    }else{
+        Stickyfill.remove(elements);
+    } 
+});
+
+$(document).ready(function(){
+    var day = new Date();
+    var hour = day.getHours();
+    
+    if( hour <= 4 )	{	
+        $('#container').css('background-color','#202f55');
+        $('nav').css('background-color', '#202f55');
+        $('.border').css('border-top', '1px solid #eddc44');
+        $('nav').css('border-right', '1px solid #eddc44');
+        $('.sub-content').css('border-left', '1px solid #eddc44');
+        $('.borderuserhome').css('border-top', '1px solid #eddc44');
+        $('body').css('color', '#ddd');
+        $('.nav-text').css('color', '#ddd');
+        $('a').css('color', '#ddd');
+        $('.login').css('color', 'black');
+    }
+    else if( hour <= 9 )	{	
+        $('#container').css('background-color','#ffedab');
+        $('nav').css('background-color', '#ffedab');
+        $('.border').css('border-top', '1px solid #ffd1a3');
+        $('nav').css('border-right', '1px solid #ffd1a3');
+        $('.sub-content').css('border-left', '1px solid #ffd1a3');
+        $('.borderuserhome').css('border-top', '1px solid #ffd1a3');
+        $('a').css('color', 'black');
+    }
+    else if( hour <= 15 ) {
+        $('#container').css('background-color','#e5ffff');
+        $('nav').css('background-color', '#e5ffff');
+        $('.border').css('border-top', '1px solid #ffddbc');
+        $('nav').css('border-right', '1px solid #ffddbc');
+        $('.sub-content').css('border-left', '1px solid #ffddbc');
+        $('.borderuserhome').css('border-top', '1px solid #ffddbc');
+        $('a').css('color', 'black');
+    }
+    else if( hour <= 20 ) {	
+        $('#container').css('background-color','#bd6856');
+        $('nav').css('background-color', '#bd6856');
+        $('.border').css('border-top', '1px solid #192f60');
+        $('nav').css('border-right', '1px solid #192f60');
+        $('.sub-content').css('border-left', '1px solid #192f60');
+        $('.borderuserhome').css('border-top', '1px solid #192f60');
+        $('a').css('color', 'black');
+    }
+    else {
+        $('#container').css('background-color','#202f55');
+        $('nav').css('background-color', '#202f55');
+        $('.border').css('border-top', '1px solid #eddc44');
+        $('nav').css('border-right', '1px solid #eddc44');
+        $('.sub-content').css('border-left', '1px solid #eddc44');
+        $('.borderuserhome').css('border-top', '1px solid #eddc44');
+        $('body').css('color', '#ddd');
+        $('.nav-text').css('color', '#ddd');
+        $('a').css('color', '#ddd');
+        $('.login').css('color', 'black');
+    }
+});
+
 

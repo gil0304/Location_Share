@@ -1,56 +1,103 @@
-
-    <a href="/"><i href="/" class="fa-sharp fa-solid fa-house"></i></a>
-
-<% if @myuser["id"] == current_user.id %>
-    <section class="navcenter">
-        <img src="<%= @myuser["img"] %>">
-        <p><%= @myuser["login_id"] %></p>
-    </section>
-    <section>
-        <!--<div class="wrapper">-->
-            <!-- xxxx年xx月を表示 -->
-        <!--    <h1 id="header"></h1>-->
-        
-            <!-- ボタンクリックで月移動 -->
-        <!--    <div id="next-prev-button">-->
-        <!--        <button id="prev" onclick="prev()">‹</button>-->
-        <!--        <button id="next" onclick="next()">›</button>-->
-        <!--    </div>-->
-            
-            <!-- カレンダー -->
-        <!--    <div id="calendar"></div>-->
-        <!--</div>-->
-    </section>
-<% else %>
-    <section class="navcenter">
-        <img src="<%= @myuser["img"] %>">
-        <p><%= @myuser["name"] %></p>
-        <% if Relationship.find_by(followed_id: User.find(@myuser["id"]).id, follower_id: current_user.id) and Relationship.find_by(followed_id: current_user.id, follower_id: User.find(@myuser["id"]).id) %>
-            <p>友達</p>
-        <% end %>
-        <% if Relationship.find_by(followed_id: @myuser['id'], follower_id: current_user.id) %>
-            <button class="followbtn" data-id="<%= @myuser['id'] %>">フォロー解除</button>
-        <% else %>
-            <button class="followbtn" data-id="<%= @myuser['id'] %>">フォローする</button>
-        <% end %>
-    </section>
-<% end %>
-
-<section>
-    <% if @mymaps %>
-        <div class="contributions">
-            <% @maps.each do |map| %>
-                    <% if Relationship.find_by(followed_id: map.user_id, follower_id: current_user.id) and Relationship.find_by(followed_id: current_user.id, follower_id: map.user_id) %>
-                        <div class="contribution">
-                            <img src="<%= User.find(map.user_id).img %>">
-                            <div class="station">
-                                <span class="name"><%= map.station %></span>
+<div class="home">
+    <% if @myuser["id"] == current_user.id %>
+        <div class="main-content">
+            <div class="profile-icon">
+                <img class="usericon" src="<%= @myuser["img"] %>">
+                <p><%= @myuser["login_id"] %></p>
+            </div>
+            <div class="margin"></div>
+            <div class="borderuserhome"></div>
+            <% if @mymaps %>
+                <div class="contributions">
+                    <% @maps.each do |map| %>
+                        <% if map.user_id == current_user.id %>
+                            <div class="contribution">
+                                <div class="user-image">
+                                    <a href="/userhome/<%= map.user_id %>"><img class="usericon" src="<%= User.find(map.user_id).img %>"></a>
+                                </div>
+                                <div class="content-list">
+                                    <div class="station">
+                                        <span class="name"><%= map.station %></span>
+                                    </div>
+                                    <p class="content-text"><%= map.content %></p>
+                                    <p><%= map.category %></p>
+                                    <p><%= map.time %></p>
+                                </div>
                             </div>
-                            <p><%= map.content %></p>
-                            <p><%= map.category %></p>
-                        </div>
+                            <div class="border"></div>
+                        <% end %>
+                    <% end %>
+                </div>
+            <% end %>
+        </div>
+        <div class="sub-content">
+            <p class="friend-list-text">友達一覧</p>
+            <div class="friend-list">
+                <% @friends.each do |friend| %>
+                    <div class="friend">
+                        <a href="/userhome/<%= User.find(friend).id %>"><img class="usericon" src="<%= User.find(friend).img %>"></a>
+                        <a href="/userhome/<%= User.find(friend).id %>"><%= User.find(friend).name %></a>
+                    </div>
                 <% end %>
+            </div>
+            <div class="friend-post">
+                <p class="friend-post-text">友達の投稿</p>
+                <div class="border"></div>
+                <div class="contributions">
+                    <% if @maps %>
+                        <% @maps.each do |map| %>
+                            <% if @friends.include?(map.user_id) %>
+                                <div class="friendcontribution">
+                                    <div class="user-image">
+                                        <a href="/userhome/<%= map.user_id %>"><img class="usericon" src="<%= User.find(map.user_id).img %>"></a>
+                                    </div>
+                                    <div class="content-list">
+                                        <div class="station">
+                                            <span class="name"><%= map.station %></span>
+                                        </div>
+                                        <p class="content-text"><%= map.content %></p>
+                                        <p><%= map.category %></p>
+                                        <p><%= map.time %></p>
+                                    </div>
+                                </div>
+                                <div class="border"></div>
+                            <% end %>
+                        <% end %>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+            
+            <!--<section>-->
+                <!--<div class="wrapper">-->
+                    <!-- xxxx年xx月を表示 -->
+                <!--    <h1 id="header"></h1>-->
+                
+                    <!-- ボタンクリックで月移動 -->
+                <!--    <div id="next-prev-button">-->
+                <!--        <button id="prev" onclick="prev()">‹</button>-->
+                <!--        <button id="next" onclick="next()">›</button>-->
+                <!--    </div>-->
+                    
+                    <!-- カレンダー -->
+                <!--    <div id="calendar"></div>-->
+                <!--</div>-->
+            <!--</section>-->
+        </div>
+    <% else %>
+        <div class="main">
+            <img class="usericon" src="<%= @myuser["img"] %>">
+            <p><%= @myuser["name"] %></p>
+            <% if @friends.include?(@myuser['id']) %>
+                <div class="button_login">
+                    <button class="followbtn" data-id="<%= @myuser['id'] %>">フォロー解除</button>
+                </div>
+            <% else %>
+                <div class="button_login">
+                    <button class="followbtn" data-id="<%= @myuser['id'] %>">フォローする</button>
+                </div>
             <% end %>
         </div>
     <% end %>
-</section>
+</div>
+    

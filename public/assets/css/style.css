@@ -3,22 +3,509 @@
     padding: 0;
 }
 
-.center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 50vh auto 0;;
+body {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
 }
 
-.navcenter {
+#wicon {
+    width: 80px;
+    height: 80px;
+}
+
+.profile-nav {
+    display: flex;
+    align-items: center;
+}
+
+.login_menu_main {
+    width: 100vw;
+    height: 100vh;
+}
+
+.login_menu {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20vh;
+}
+
+.button_login {
+    margin-top: 1vh;
+}
+
+.button-post .button_login {
+    margin-right: 1vw;
+}
+
+.button_login a {
+    text-decoration: none;
+}
+
+.button_login .login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 1em 2em;
+    height: 2vh;
+    width: 30vw;
+    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+    background-color: #cccccc;
+    border-radius: 50vh;
+    text-decoration: none;
+}
+
+.button_login a:hover {
+    text-decoration: none;
+    background-color: #bbbbbb;
+}
+
+.button_login input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 1em 2em;
+    height: 2vh;
+    width: 5vw;
+    color: #333;
+    font-size: 13px;
+    background-color: #cccccc;
+    border-radius: 50vh;
+    text-decoration: none;
+    border: none;
+}
+
+.button_login input:hover {
+    text-decoration: none;
+    background-color: #bbbbbb;
+}
+
+.button_login button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    padding: 1em 2em;
+    height: 2vh;
+    width: 10vw;
+    color: #333;
+    font-size: 13px;
+    background-color: #cccccc;
+    border-radius: 50vh;
+    text-decoration: none;
+    border: none;
+}
+
+.button_login button:hover {
+    text-decoration: none;
+    background-color: #bbbbbb;
+}
+
+.button-post {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+}
+
+.explanation {
+    display: flex;
+    justify-content: center;
+    margin-top: 5vh;
+}
+
+.modal{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+.modal:not(:target) {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+.modal:target{
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s, visibility 0.5s;
+}
+.overlay{
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #000;
+    opacity: 0.7;
+    z-index: 2;
+    top: 0;
+    left: 0;
+}
+
+#post .modal-wrapper {
+    width: 100%;
+    max-width: 400px;
+    min-width: 300px;
+    height: 100%;
+    max-height: 350px;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+}
+
+.modal-wrapper{
+    width: 100%;
+    max-width: 400px;
+    min-width: 300px;
+    height: 100%;
+    max-height: 350px;
+    background-color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    z-index: 4;
+}
+.modal-contents{
+    overflow: auto;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+.modal-content{
+    margin: 25px;
+}
+.modal-close{
+    color: black;
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    text-decoration: none;
+}
+
+.signform {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.input-box{
+    display: flex; /*アイコン、テキストボックスを調整する*/
+    align-items: center; /*アイコン、テキストボックスを縦方向の中心に*/
+    justify-content: center; /*アイコン、テキストボックスを横方向の中心に*/
+    width: 100%;
+    height: 50px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+}
+
+.input-inner{
+    width: 100%;
+    height: 100%;
+    background-color: transparent; /*.password_boxの枠線お角一部被るため透明に*/
+    position: relative;
+}
+
+.input-text{
+    position: absolute;
+    z-index: 1; /*.password_stringよりも上に配置*/
+    height: 100%;
+    width: 100%;
+    top: 0; left: 0; bottom: 0; right: 0;
+    border: none; /*枠線非表示*/
+    outline: none; /*フォーカス時の枠線非表示*/
+    padding: 0 10px;
+    font-size: 16px;
+    background-color: transparent; /*後ろの.password_stringを見せるため*/
+    box-sizing: border-box; /*横幅の解釈をpadding, borderまでとする*/
+}
+
+.input-string{
+    position: absolute;
+    height: 100%;
+    width: 140px; /*文字列分の長さ*/
+    top: 0; left: 0; bottom: 0; right: 0;
+    padding-left: 10px; /*position: absolute;でのmarginは親要素はみ出す*/
+    font-size: 10px;
+    line-height: 50px; /*文字列を縦方向にmiddleに見せるため*/
+    background-color: transparent;
+    color: #80868b;
+    box-sizing: border-box; /*横幅の解釈をpadding, borderまでとする*/
+    transition: all 0.2s;
+    -webkit-transition: all 0.2s;
+}
+
+.fa-eye-slash{ /*アイコンに一定のスペースを設ける*/
+    height: 20px;
+    width: 20px;
+    padding: 5px 5px;
+}
+
+/*アニメーション*/
+.input-text:focus + .input-string{
+    color: #3be5ae;
+    font-size: 10px;
+    line-height: 10px;
+    width: 85px;
+    height: 10px;
+    padding: 0 2px;
+    background-color: white;
+    transform:translate3d(5px, -6px, 0);
+}
+
+nav{
+    /*stickyで固定*/
+    position: -webkit-sticky;/*Safari*/
+    position: sticky;
+    /*固定したい位置*/
+    top: 0;
+    height: 100vh;
+    /*ナビゲーションの形状*/
+    background:#fff;
+    border-right: 1px solid #eee;
+    /*box-shadow:0 0 5px #ddd;*/
+    padding: 20px;
+}
+
+/*レイアウトのためのCSS*/
+#container{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+#main-area{
+    width:80%;
+}
+
+#sub-area{
+    width:15%;
+    padding: 0px 20px 0 0;
+}
+
+nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+nav ul{
+    list-style: none;
+}
+
+nav ul li a{
+    display: block;
+    text-decoration: none;
+    color: #666;
+    padding:10px;
+    transition:all 0.3s;
+}
+
+li a i {
+    width: 40px;
+    height: 40px;
+    font-size: 25px;
+}
+
+.sub-content{
+    /*stickyで固定*/
+    position: -webkit-sticky;/*Safari*/
+    position: sticky;
+    /*固定したい位置*/
+    top: 0;
+    height: 100vh;
+    /*ナビゲーションの形状*/
+    /*background:#fff;*/
+    border-left: 1px solid #eee;
+    /*box-shadow:0 0 5px #ddd;*/
+    padding: 20px;
+}
+
+.post-menu {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.post-image {
+    width: 10%;
+}
+
+.post-form {
+    width: 85%;
+}
+
+.post-form form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.category {
+    width: 7vw;
+    height: 3vh;
+    border-radius: 50px;
+    border: none;
+    background-color: #ccc;
+}
+
+.border {
+    border-top: 1px solid #eee;
+    width: 100%;
+    margin: 1vh 0;
+}
+
+.borderuserhome {
+    border-top: 1px solid #eee;
+    width: 100%;
+    margin: 5vh 0 3vh;
+}
+
+.margin {
+    width: 100%;
+    margin: 3vh 0;
+}
+
+.home {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60%;
+    margin-right: 4vw;
+    margin-top: 5vh;
+}
+
+.sub-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border-left: 1px solid #eee;
+    width: 35%;
+}
+
+.content {
+    border: none;
+    width: 30vw;
+    height: 10vh;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.content:focus {
+    outline: none;
+}
+
+.contribution {
+    display: flex;
+    width: 50vw;
+}
+
+.user-image {
+    margin-right: 5vw;
+}
+
+.content-list {
+    height: 85%;
+    width: 100%;
+}
+
+.content-text {
+    width: 100%;
+}
+
+.group {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.search_bar-index{
+    display: flex; /*アイコン、テキストボックスを調整する*/
+    align-items: center; /*アイコン、テキストボックスを縦方向の中心に*/
+    justify-content: center; /*アイコン、テキストボックスを横方向の中心に*/
+    height: 50px;
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 50px;
+}
+
+.search_bar-search{
+    display: flex; /*アイコン、テキストボックスを調整する*/
+    align-items: center; /*アイコン、テキストボックスを縦方向の中心に*/
+    justify-content: center; /*アイコン、テキストボックスを横方向の中心に*/
+    height: 50px;
+    width: 50%;
+    background-color: #ddd;
+    border-radius: 50px;
+}
+
+.search_icon{ /*アイコンに一定のスペースを設ける*/
+    height: 15px;
+    width: 15px;
+    padding: 5px 5px;
+}
+
+.search-user {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.search-user a {
+    text-decoration: none;
+}
+
+.search-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 3vh;
+}
+
+.fa-search {
+    margin-right: 1vw;
+    color: #666;
+}
+
+.searchbtn {
+    display: none;
+}
+
+.keyword {
+    font-size: 16px;
+    width: 80%; /*flexの中で100%広げる*/
+    background-color: #ddd;
+    border: none; /*枠線非表示*/
+    outline: none; /*フォーカス時の枠線非表示*/
+    box-sizing: border-box; /*横幅の解釈をpadding, borderまでとする*/
 }
 
 img {
     width: 40px;
     height: 40px;
+}
+
+.usericon {
+    border-radius: 50px;
 }
 
 /*全体*/
@@ -97,6 +584,94 @@ td.today {
 }
 
 #map {
-    width: 600px;
-    height: 600px;
+    width: 100%;
+    padding-top: 100%;
+}
+
+#box {
+    margin-top: 3vh;
+}
+
+#icon {
+    margin: 3vh 0;
+}
+
+.user-list {
+    width: 70%;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ddd;
+    border-radius: 50px;
+    padding: 2vh;
+}
+
+.user-list a {
+    text-decoration: none;
+}
+
+.user-list p {
+    margin: 3vh 0;
+    color: #666;
+}
+
+.contributions {
+    display: flex;
+    flex-direction: column;
+}
+
+.homecontribution {
+    display: flex;
+    width: 20vw;
+}
+
+.friendcontribution {
+    display: flex;
+}
+
+.friend-list {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-content: space-around;
+}
+
+.friend {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 1vw;
+}
+
+.friend-list-text {
+    margin-bottom: 2vh;
+}
+
+.friend-post{
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+.friend-post-text {
+    margin: 2vh 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-right: 4vw;
+    margin-top: 5vh;
+}
+
+.profile-icon {
+    display: flex;
+    flex-direction: column;
+    align-items:center;
 }

@@ -10,10 +10,49 @@
         <script src="/assets/js/script.js"></script>
         <link rel="stylesheet" href="/assets/css/style.css">
         <link href="https://fonts.googleapis.com/css?family=Righteous" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300&display=swap" rel="stylesheet">
+        <link rel="shortcut icon" href="/assets/image/favicon.ico">
+        <meta property="og:image" content="/assets/image/logo.png">
     </head>
     <body>
-        <main>
-            <%= yield %>
-        </main>
+        <div id="container">
+            <% if current_user %>
+                <aside id="sub-area">
+                    <nav>
+                        <ul id="g-navi">
+                            <li>
+                                <a class="nav-text" href="/search">
+                                    <i class="fa-sharp fa-solid fa-magnifying-glass"></i>ユーザー検索
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-text" href="/userhome/<%= current_user.id %>">
+                                    <div class="profile-nav">
+                                        <img class="usericon" src="<%= current_user.img %>" alt="user_image">
+                                        <p>プロフィール</p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-text" href="/signout">
+                                    <i class="fa-sharp fa-solid fa-arrow-right-from-bracket"></i>サインアウト
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-text" href="/">
+                                    <i href="/" class="fa-sharp fa-solid fa-house"></i>ホーム
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </aside>
+            <% end %>
+            <main id="main-area">
+                <%= yield %>
+            </main>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/stickyfill/2.1.0/stickyfill.min.js"></script>
     </body>
 </html>

@@ -1,49 +1,160 @@
 <% if current_user %>
-    <section class="navcenter">
-        <a href="/search">検索ページ</a>
-        <img src="<%= current_user.img %>" alt="user_image">
-    </section>
-    
-    <section>
-        <form class="center">
-            <input class="content" type="text" name="content" placeholder="コメントを入力してください">
-            <select class="category" name="category">
-                <option value="" disabled>カテゴリーを選択してください</option>
-                <option value="家">家</option>
-                <option value="学校">学校</option>
-                <option value="職場">職場</option>
-                <option value="遊び">遊び</option>
-                <option value="その他">その他</option>
-            </select>
-            <input type="submit" value="投稿" class="postbtn">
-        </form>
-        <div id="map"></div>
-        <div id="box">
-            <% if @maps %>
-                
+    <div class="home">
+        <div class="main-content">
+            <div class="post-menu">
+                <div class="post-image">
+                    <img class="usericon" src="<%= current_user.img %>">
+                </div>
+                <div class="post-form">
+                    <form autocomplete="off">
+                        <select class="category" name="category" placeholder="カテゴリーを選択してください">
+                            <option value="家">家</option>
+                            <option value="学校">学校</option>
+                            <option value="職場">職場</option>
+                            <option value="遊び">遊び</option>
+                            <option value="その他">その他</option>
+                        </select>
+                        <input type="text" class="content" name="content" maxlength="30" placeholder="ひとこと入力してください"></textarea>
+                        <div class="button-post">
+                            <div class="button_login">
+                                <input type="submit" value="投稿" class="postbtn">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="border"></div>
+            <!--<div class="room">-->
+            <!--    <iframe src="/message"></iframe>-->
+            <!--</div>-->
+            <div id="box">
+                <% if @maps %>
                     <div class="contributions">
                         <% @maps.each do |map| %>
-                            <% if Relationship.find_by(followed_id: User.find(map.user_id).id, follower_id: current_user.id) and Relationship.find_by(followed_id: current_user.id, follower_id: User.find(map.user_id).id) %>
+                            <% if map.user_id == current_user.id %>
                                 <div class="contribution">
-                                    <img src="<%= User.find(map.user_id).img %>">
-                                    <div class="station">
-                                        <span class="name"><%= map.station %></span>
+                                    <div class="user-image">
+                                        <a href="/userhome/<%= map.user_id %>"><img class="usericon" src="<%= User.find(map.user_id).img %>"></a>
                                     </div>
-                                    <p><%= map.content %></p>
-                                    <p><%= map.category %></p>
-                                    <p><%= map.time %></p>
+                                    <div class="content-list">
+                                        <div class="station">
+                                            <span class="name"><%= map.station %></span>
+                                        </div>
+                                        <p class="content-text"><%= map.content %></p>
+                                        <p><%= map.category %></p>
+                                        <p><%= map.time %></p>
+                                    </div>
                                 </div>
+                                <div class="border"></div>
+                            <% end %>
+                            <% if @friends.include?(map.user_id) %>
+                                <div class="contribution">
+                                    <div class="user-image">
+                                        <a href="/userhome/<%= map.user_id %>"><img  class="usericon" src="<%= User.find(map.user_id).img %>"></a>
+                                    </div>
+                                    <div class="content-list">
+                                        <div class="station">
+                                            <span class="name"><%= map.station %></span>
+                                        </div>
+                                        <p class="content-text"><%= map.content %></p>
+                                        <p><%= map.category %></p>
+                                        <p><%= map.time %></p>
+                                    </div>
+                                </div>
+                                <div class="border"></div>
                             <% end %>
                         <% end %>
                     </div>
-                
-            <% end %>
+                <% end %>
+            </div>
         </div>
-    </section>
-
+        <div class="sub-content">
+            <form class="group" autocomplete="off">
+                <div class="search_bar-index">
+                    <i class="fas fa-search search_icon"></i>
+                    <input class="keyword" type="text" name="keyword" placeholder="ユーザーIDを入力">
+                </div>
+                <input class="searchbtn" type="submit" value="検索">
+            </form>
+            <div class="search-box"></div>
+            <div class="border"></div>
+            <div id="icon"><p>現在地の天気</p><img id="wicon" src="" alt="Weather icon"></div>
+            <div id="map" data-id='<%= @locations.to_json %>'></div>
+            <div id="map2" data-id='<%= @currentusericon.to_json %>'></div>
+        </div>
+    </div>
 <% else %>
-    <section class="center">
-        <a href="/signin">ログイン</a>
-        <a href="/signup">新規登録</a>
-    </section>
+    <div class="login_menu_main">
+        <div class="login_menu">
+            <div class="modal-open">
+                <h2 class="title">Location Shareをはじめよう</h2>
+                <div class="button_login">
+                    <a class="login" href="#signup">新規登録</a>
+                </div>
+                <p class="explanation">アカウントをお持ちの場合</p>
+                <div class="button_login">
+                    <a class="login" href="#signin">ログイン</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="signup">
+        <a href="#!" class="overlay"></a>
+        <div class="modal-wrapper">
+            <div class="modal-contents">
+                <a href="#!" class="modal-close"><i class="fa-sharp fa-solid fa-xmark"></i></a>
+                <div class="modal-content">
+                    <form class="signform" action="/signup" enctype="multipart/form-data" method="post" autocomplete="off">
+                        <div class="input-box">
+                            <div class="input-inner">
+                                <input class="input-text" type="text" name="name" autocomplete="off" required>
+                                <div class="input-string">名前を入力</div>
+                            </div>
+                        </div>
+                        <div class="input-box">
+                            <div class="input-inner">
+                                <input class="input-text" type="text" name="login_id" autocomplete="off" required>
+                                <div class="input-string">ログインIDを入力</div>
+                            </div>
+                        </div>
+                        <input type="file" name="file">
+                        <div class="input-box">
+                            <div class="input-inner">
+                                <input class="input-text" type="password" name="password" autocomplete="off" required>
+                                <div class="input-string">パスワードを入力</div>
+                            </div>
+                            <i class="fas fa-eye-slash"></i>
+                        </div>
+                        <input type="submit" value="登録">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="signin">
+        <a href="#!" class="overlay"></a>
+        <div class="modal-wrapper">
+            <div class="modal-contents">
+                <a href="#!" class="modal-close"><i class="fa-sharp fa-solid fa-xmark"></i></a>
+                <div class="modal-content">
+                    <form class="signform" action="/signin" method="post">
+                        <div class="input-box">
+                            <div class="input-inner">
+                                <input class="input-text" type="text" name="login_id" autocomplete="off" required>
+                                <div class="input-string">ログインIDを入力</div>
+                            </div>
+                        </div>
+                        <div class="input-box">
+                            <div class="input-inner">
+                                <input class="input-text" type="password" name="password" autocomplete="off" required>
+                                <div class="input-string">パスワードを入力</div>
+                            </div>
+                            <i class="fas fa-eye-slash"></i>
+                        </div>
+                        <input type="submit" value="ログイン">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 <% end %>
